@@ -1,4 +1,5 @@
 import { Inngest } from 'inngest';
+import User from '../models/User.js';
 
 
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -20,7 +21,7 @@ const syncUserCreation = inngest.createFunction(
 )
 
 // Inngest funtion to delete user from database
-const syncUserDeletion = ingest.createFunction(
+const syncUserDeletion = inngest.createFunction(
   { id: 'delete-user-from-clerk' },
   { event: 'clerk/user.deleted' },
   async ({ event }) => {
@@ -31,7 +32,7 @@ const syncUserDeletion = ingest.createFunction(
 );
 
 // Ingest Function to update user data in database
-const syncUserUpdation = ingest.createFunction(
+const syncUserUpdation = inngest.createFunction(
   { id: 'update-user-from-clerk' },
   { event: 'clerk/user.updated' },
   async ({ event }) => {
