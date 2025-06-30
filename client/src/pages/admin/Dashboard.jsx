@@ -1,12 +1,16 @@
 import { ChartLineIcon, Circle, CircleDollarSign, PlayCircleIcon, StarIcon, UsersIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import { dummyDashboardData } from '../../assets/assets';
 import Title from '../../components/admin/Title';
 import Loading from '../../components/Loading';
 import BlurCircle from '../../components/BlurCircle';
 import { dateFormat } from '../../lib/dateFormat';
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
+
+    const {axios, getToken, user, image_base_url} = useAppContext();
+    
     const currency = import.meta.env.VITE_CURRENCY
     const [dashboardData, setDashboardData] = useState({
         totalBookings: 0,
@@ -16,6 +20,7 @@ const Dashboard = () => {
     });
 
     const [loading , setLoading] = useState(true);
+
 
     const dashboardCards = [
         { 
@@ -41,15 +46,26 @@ const Dashboard = () => {
     ]
 
     const fetchDashboardData = async () => {
-        setDashboardData(dummyDashboardData)
-        setLoading(false)
+        try {
+            const { data } = await axios.get("/api/admin/dashboard" , {headers: {
+                Authorization: `Bearer ${await getToken()}`
+            }})
+        if (data.success) {
+            setDashboardData(data.dashboardData);
+            setLoading(false);
+        }else{
+            toast.error(data.message);
+        }
+        } catch (error) {
+            toast.error("Error fetching dashboard data" , error);
+        }
     };
 
     useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
-
+        if (user){
+            fetchDashboardData();
+        } 
+    }, [user]);
 
   return !loading ?(
     <>
@@ -77,7 +93,7 @@ const Dashboard = () => {
         <div key={show.show_id} className="w-55 rounded-lg overflow-hidden
         h-full pb-3 bg-primary/10 border border-primary/20
         hover:-translate-y-1 transition duration-300">
-            <img src={show.movie.poster_path} alt='' className="h-60
+            <img src={image_base_url + show.movie.poster_path} alt='' className="h-60
             w-full object-cover" />
             <p className="font-medium p-2 truncate">{show.movie.title}</p>
 
@@ -92,7 +108,7 @@ const Dashboard = () => {
                     {show.movie.vote_average.toFixed(1)}
                 </p>
             </div>
-            <p className='px-2 pt-2 text-sm text-gray-500'> {dateFormat(show.showDate)} </p>
+            <p className='px-2 pt-2 text-sm text-gray-500'> {dateFormat(show.showDateTime)} </p>
         </div>
     ))}
 </div>

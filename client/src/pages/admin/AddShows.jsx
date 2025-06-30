@@ -92,7 +92,7 @@ const {data} = await axios.post('/api/show/add', payload, { headers: {
 }})
 
 if (data.success){
-  toString.success(data.message);
+  toast.success(data.message);
   setSelectedMovie(null);
   setDateTimeSelection({});
   setShowPrice("");

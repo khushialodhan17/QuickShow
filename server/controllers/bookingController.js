@@ -1,6 +1,6 @@
 import Show from "../models/Show.js";
 import Booking from "../models/Booking.js";
-
+import { requireAuth } from "@clerk/express";
 // Function to check availability of selected seats for a movie
 const checkSeatsAvailability = async (showId, selectedSeats) => {
   try {

@@ -1,5 +1,5 @@
 import express from 'express';
-
+import { requireAuth } from "@clerk/express";
 import { addShow, getNowPlayingMovies, getShow, getShows } from "../controllers/showController.js";
 import { protectAdmin } from '../middleWare/auth.js';
 
